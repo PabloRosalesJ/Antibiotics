@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block container %}
+
+<div class="mt-3">
+
+    <h1 class="display-4">
+        Nueva Recetea
+        <a class="btn btn-outline-warning mb-3 mt-3 box" data-toggle="collapse" href="#receta" role="button"
+            aria-expanded="false" aria-controls="receta"> > </a>
+    </h1>
+
+</div>
+<hr>
+<!-- controles -->
+<div class="form-inline box mb-3">
+
+    <p class="mr-3 ml-3">
+        <a class="btn btn-outline-success mb-3 mt-3 ml-3" data-toggle="collapse" href="#antibiotico" role="button"
+            aria-expanded="false" aria-controls="antibiotico">Nuevo Antibiotico </a>
+        <a class="btn btn-outline-dark mb-3 mt-3 ml-3" data-toggle="collapse" href="#doctor" role="button"
+            aria-expanded="false" aria-controls="doctor"> Nuevo Doctor </a>
+
+    </p>
+    <div class="form-group mx-sm-3 mb-3 float-rigt">
+        <form action="{{ url_for('detalles') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="text" class="form-control" id="auditar" placeholder="Clave" onkeypress='validate(event)' name="auditar_clave">
+            <button type="submit" class="btn btn-primary ">Auditar Clave</button>
+        </form>
+    </div>
+</div>
+<!-- endcontroles -->
+
+<!-- antibiotico -->
+<div class="collapse" id="antibiotico">
+    <div class="card box mb-3" style="width: 25rem;">
+        <div class="card-body ">
+            <h5 class="card-title">Crear Antibiotico</h5>
+
+            <form action="{{url_for('new_antibiotic')}}" method="POST">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="clave">clave</label>
+                        <input type="text" class="form-control" id="clave" placeholder="clave" name="clave" required>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" placeholder="Nombre" name="nombre" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="presentacion">Presentacion</label>
+                    <textarea class="form-control" id="presentacion" rows="3" name="presentacion"
+                        placeholder="Presentacion"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" class="form-control" id="stock" placeholder="stock base" name="stock" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- endantibiotico -->
+
+<!-- medico -->
+<div class="collapse" id="doctor">
+    <div class="card box mb-3" style="width: 25rem;">
+        <div class="card-body">
+            <h5 class="card-title">Nuevo Doctor</h5>
+
+            <form action="{{url_for('new_medico')}}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="Nomre">Nomre</label>
+                    <input type="text" class="form-control" id="Nomre" placeholder="Nomre" name="nombre" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="ap_pat">Apellido Paterno</label>
+                        <input type="text" class="form-control" id="ap_pat" placeholder="Apellido Paterno" name="ap_pat"
+                            required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ap_mat">Apellido Materno</label>
+                        <input type="text" class="form-control" id="ap_mat" placeholder="Apellido Materno" name="ap_mat"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="ced_prof">Cedula profesional</label>
+                        <input type="text" class="form-control" id="ced_prof" name="ced_prof"
+                            placeholder="Cedula profesional" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="rfc">RFC</label>
+                        <input type="text" class="form-control" id="rfc" name="rfc" placeholder="RFC" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+                <a href="{{ url_for('all_doctors') }}" class="btn btn-dark btn-block">Ver todos</a>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- endmedico -->
+
+<!-- receta -->
+<div class="collapse" id="receta">
+    <div class="card box mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Nueva Receta</h5>
+
+            <form action="{{url_for('new_receta')}}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="medico">Medico</label>
+                        <select id="medico" class="form-control" name="medico">
+                            <option selected>Choose...</option>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}">{{ doctor.nombre }} {{ doctor.apellido_paterno }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="folio">Folio de la receta</label>
+                        <input type="text" class="form-control" id="folio" placeholder="Folio de la receta"
+                            name="folio">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="medico">Clave del antiviotico</label>
+                        <select id="medico" class="form-control" name="clave">
+                            <option selected>Choose a antibiotic ...</option>
+                            {% for antibiotic in antibiotics %}
+                            <option value="{{ antibiotic.clave }}"> {{ antibiotic.clave }} |
+                                {{ antibiotic.nombre[:15] }}...</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="piezas">Piezas</label>
+                        <input type="number" class="form-control" id="piezas" placeholder="Piezas" name="piezas">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="nombre_paciente">Nombre del paciente</label>
+                        <input type="text" class="form-control" id="nombre_paciente" name="nombre_paciente">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="fecha">Fecha</label>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" id="fecha" name="fecha">
+                        </div>
+                        <p id="fecha" class="form-text text-muted">Si la fecha no es introducida, se tomará la fecha
+                            actual</small>
+                    </div>
+                </div>
+
+
+                <button type="submit" class="btn btn-primary btn-lg btn-block box">Registrar esta receta</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+<!-- endreceta -->
+
+<!-- tabla_antibioticos -->
+<table class="table table-hover box">
+    <thead>
+        <tr role="row">
+            <th class="sorting_asc" aria-sort="ascending" scope="col">Clave</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Presentacion</th>
+            <th scope="col">Stock actual</th>
+            <th scope="col">acciones</th>
+        </tr>
+    </thead>
+    <tbody">
+        {% for antibiotico in antibioticos %}
+        {% if antibiotico.stock < min_stock %}
+        {% set estado = "table-danger" %}
+        {% endif %}
+        <tr class="box {{ estado }}">
+            <th scope="row">{{ antibiotico.clave }}</th>
+            <td style="width: 30rem;">{{ antibiotico.nombre }}</td>
+            <td>{{ antibiotico.presentacion }}</td>
+            <td>{{ antibiotico.stock }}</td>
+            <td>
+                <a class="text-danger" href="{{ url_for('delete_antbiotic', id = antibiotico.id ) }}">Eliminar</a>
+                <a href="">Editra</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+</table>
+<!-- end_tabla -->
+
+{% endblock %}
+
+{% block script %}
+<script>
+    function validate(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+</script>
+{% endblock %}

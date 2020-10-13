@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block container %}
+<h2 class="mt-3">Nombre: <strong>{{a.nombre}}</strong> <span class="h4">  Clave:{{ a.clave }} </span> </h2> 
+<h4>Desc:</h4>
+<h5> {{ a.presentacion }} </h5>
+<a class="btn btn-outline-primary" href="{{ url_for('home') }}"> < Home</a>
+<hr />
+<br>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Entradas</th>
+            <th scope="col">Salidas</th>
+            <th scope="col">Folio Receta</th>
+            <th scope="col">Consecutivo</th>
+            <th scope="col">Stock actual</th>
+            <th scope="col">Medico</th>
+            <th scope="col">Paciente</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for receta in recetas %}
+        <tr>
+            <th scope="row">{{ receta.fecha.day }}/{{ months[receta.fecha.month-1] }}/{{ receta.fecha.year }} </th> 
+            <td>
+                {% if receta.piezas_entrada == None %}
+                     
+                {% elif receta.piezas_entrada > 0 %}
+                    {{ receta.piezas_entrada }}   
+                {% endif %}
+            </td>
+            <td>{{ receta.piezas }}</td>
+            <td>{{ receta.folio }}</td>
+            <td>{{ receta.consecutivo }}</td>
+            <td>{{ receta.stock_actual }}</td>
+            <td>{{ receta.medico }}</td>
+            <td>{{ receta.pasiente }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
